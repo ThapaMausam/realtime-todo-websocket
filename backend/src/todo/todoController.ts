@@ -24,7 +24,14 @@ class Todo {
                 this.handleUpdateTodoStatus(socket, data)
             })
 
-            this.io.on("disconnect", (socket:Socket) => {
+            // Fetch-Todo
+            // socket.on("fetch-todo", () => {
+            //     this.getPendingTodos(socket)
+            // })
+
+            this.getPendingTodos(socket)
+
+            socket.on("disconnect", () => {
                 console.log(`Client disconnnected: ${socket.id}`)
             })
         })
@@ -105,6 +112,21 @@ class Todo {
 
             const todos = await todoModel.find({status: Status.Pending})
 
+            socket.emit("todo-updated", {
+                status: "success",
+                data: todos
+            })
+        } catch (error) {
+            socket.emit("todo-response", {
+                status: "error",
+                error
+            })
+        }
+    }
+
+    private async getPendingTodos(socket:Socket) {
+        try {
+            const todos = await todoModel.find({status: Status.Pending})
             socket.emit("todo-updated", {
                 status: "success",
                 data: todos
