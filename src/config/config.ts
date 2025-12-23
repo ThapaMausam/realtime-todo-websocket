@@ -4,5 +4,5 @@ dotenv.config()
 
 export const envConfig = {
     port: process.env.PORT,
-    // ... other config values
+    mongodb: process.env.MONGODB_URI
 }
